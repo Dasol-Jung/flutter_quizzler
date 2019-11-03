@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../src/questions.dart';
+import '../src/quiz_controller.dart';
+
 
 class QuizPage extends StatefulWidget {
   @override
@@ -11,19 +12,16 @@ class _QuizPageState extends State<QuizPage> {
   bool isOver = false;
   List<bool> score = [];
   TextEditingController controller = TextEditingController();
-  List<Question> questionList = List.generate(questions.length, (index) {
-    return Question(
-        title: questions[index]['title'], answer: questions[index]['answer']);
-  });
+  QuizController quizController = QuizController();
 
   submitAnswer(answer) {
-    score.add(questionList[currentIndex].isCorrect(answer));
+    score.add(quizController.isCorrect(currentIndex, answer));
     controller.clear();
-    if (currentIndex < questionList.length - 1) {
+    if (currentIndex < quizController.getNumberOfQuiz() - 1) {
       setState(() {
         currentIndex++;
       });
-    } else if (currentIndex == questionList.length - 1) {
+    } else if (currentIndex == quizController.getNumberOfQuiz() - 1) {
       setState(() {
         isOver = true;
         currentIndex = 0;
@@ -42,7 +40,7 @@ class _QuizPageState extends State<QuizPage> {
   Text renderMainText() {
     if (!isOver) {
       return Text(
-        questionList[currentIndex].title,
+        quizController.getQuizText(currentIndex),
         style: TextStyle(fontSize: 20.0, height: 1.5),
       );
     } else {
